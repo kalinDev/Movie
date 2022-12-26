@@ -3,48 +3,42 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using MovieApi.Application.AutoMapper;
-using MovieApi.Application.DTOs.Request;
+using MovieApi.Application.DTOs.Response;
 using MovieApi.Application.Notifications;
 using MovieApi.Controllers;
 using MovieApi.Domain.Entities;
 using MovieApi.Domain.Interfaces;
+using MovieApiTest.Fixtures;
 
 namespace MovieApiTest.Tests;
 
-public class MoviesControllerTest
+public class MoviesControllerTest : IClassFixture<MovieFixture>
 {
+    private readonly Mock<IMovieRepository> _movieRepositoryMock;
     private readonly Mock<IMovieService> _movieServiceMock;
     private readonly MoviesController _controller;
+    private readonly MovieFixture _movieFixture;
     
-    public MoviesControllerTest()
+    public MoviesControllerTest(MovieFixture movieFixture)
     {
+        _movieFixture = movieFixture;
+        _movieRepositoryMock = new Mock<IMovieRepository>();
         _movieServiceMock = new Mock<IMovieService>();
         var mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AutoMapperConfig())));
-        _controller = new MoviesController(_movieServiceMock.Object, mapper, new Notifier());
+        _controller = new MoviesController(_movieRepositoryMock.Object, _movieServiceMock.Object, mapper, new Notifier());
     }
     
-    #region PostMovie
+    #region AddMovieAsync
 
-    [Fact(DisplayName = "PostMovie returns 200 Ok")]
+    [Fact(DisplayName = "AddMovieAsync returns 200 Ok")]
     [Trait("Controller", "Movies")]
-    public async void PostMovie_ReturnOk()
+    public async void AddMovieAsync_ReturnOk()
     {
         //Arrange
-        var movie = new MovieRequestDto
-        {
-            Title = "Spirited Away",
-            ReleaseDate = DateTime.Now,
-            Summary = @"Ten-year-old Chihiro Ogino and her parents are traveling to their new home when her father decides to take a shortcut.
-The family's car stops in front of a tunnel leading to what appears to be an abandoned amusement park, which Chihiro's father insists on exploring, despite his daughter's protest.
-They find a seemingly empty restaurant still stocked with food, which Chihiro's parents immediately begin to eat.
-While exploring further, Chihiro reaches an enormous bathhouse and meets a boy named Haku, who warns her to return across the riverbed before sunset.
-However, Chihiro discovers that her parents have been transformed into pigs, and she is unable to cross the now-flooded river.",
-            InTheaters = false,
-            OffTheatersDate = DateTime.Now.AddDays(-10)
-        };
+        var movieRequestDto = _movieFixture.CreateValidMovieRequestDto();
 
         //Act
-        var result = await _controller.PostAsync(movie);
+        var result = await _controller.PostAsync(movieRequestDto);
 
         //Assert
 
@@ -54,28 +48,17 @@ However, Chihiro discovers that her parents have been transformed into pigs, and
 
     
     
-    [Fact(DisplayName = "PostMovie returns 400 BadRequest")]
+    [Fact(DisplayName = "AddMovieAsync returns 400 BadRequest")]
     [Trait("Controller", "Movies")]
-    public async void PostMovie_ReturnBadRequest()
+    public async void AddMovieAsync_ReturnBadRequest()
     {
         //Arrange
         
-        //creating a movie without title
-        var movie = new MovieRequestDto
-        {
-            ReleaseDate = DateTime.Now,
-            Summary = @"Ten-year-old Chihiro Ogino and her parents are traveling to their new home when her father decides to take a shortcut.
-The family's car stops in front of a tunnel leading to what appears to be an abandoned amusement park, which Chihiro's father insists on exploring, despite his daughter's protest.
-They find a seemingly empty restaurant still stocked with food, which Chihiro's parents immediately begin to eat.
-While exploring further, Chihiro reaches an enormous bathhouse and meets a boy named Haku, who warns her to return across the riverbed before sunset.
-However, Chihiro discovers that her parents have been transformed into pigs, and she is unable to cross the now-flooded river.",
-            InTheaters = true,
-            OffTheatersDate = DateTime.Now.AddDays(+10)
-        };
+        var movieRequestDto = _movieFixture.CreateInvalidMovieRequestDto();
         _controller.ModelState.AddModelError("fakeError", "fakeError");
 
         //Act
-        var result = await _controller.PostAsync(movie);
+        var result = await _controller.PostAsync(movieRequestDto);
 
         //Assert
         _movieServiceMock.Verify(x => x.AddAsync(It.IsAny<Movie>()), Times.Never);
@@ -84,4 +67,24 @@ However, Chihiro discovers that her parents have been transformed into pigs, and
     
     #endregion
     
+    #region GetMovieAsync
+
+    [Fact(DisplayName = "GetMovieAsync returns 200 Ok")]
+    [Trait("Controller", "Movies")]
+    public async void GetMovieAsync_ReturnOk()
+    {
+        //Arrange
+        var movies = _movieFixture.CreateValidMovies();
+        _movieRepositoryMock.Setup(repository => repository.FindAsync()).ReturnsAsync(movies);
+        
+        //Act
+        var result = await _controller.GetAsync();
+        
+        //Assert
+        _movieRepositoryMock.Verify(x => x.FindAsync(), Times.Once);
+        result.Should().BeOfType<ActionResult<List<MovieResponseDto>>>();
+        
+    }
+
+    #endregion
 }

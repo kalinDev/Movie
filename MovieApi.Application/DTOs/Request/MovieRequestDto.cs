@@ -21,5 +21,4 @@ public record MovieRequestDto
     [Required]
     public DateTime OffTheatersDate { get; set; }
 
-    //image of poster
 }

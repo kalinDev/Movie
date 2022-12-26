@@ -2,7 +2,7 @@
 
 namespace MovieApi.Domain.Interfaces;
 
-public interface IMovieService
+public interface IMovieService 
 {
     Task AddAsync(Movie movie);
 }
