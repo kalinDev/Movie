@@ -14,7 +14,7 @@ public abstract class ApiController : ControllerBase
         => _notifier = notifier;
         
 
-    protected ActionResult CustomResponse(object? result = null)
+    protected ActionResult CustomResponse(object result = null)
     {
         if (IsOperationValid())
         {

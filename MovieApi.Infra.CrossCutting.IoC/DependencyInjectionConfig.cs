@@ -3,7 +3,7 @@ using MovieApi.Application.Notifications;
 using Microsoft.Extensions.DependencyInjection;
 using MovieApi.Data;
 
-namespace Movies.Infra.CrossCutting.IoC;
+namespace MovieApi.Infra.CrossCutting.IoC;
 
 public static class DependencyInjectionConfig
 {
