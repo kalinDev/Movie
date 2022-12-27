@@ -8,6 +8,7 @@ using MovieApi.Domain.Interfaces;
 
 namespace MovieApi.Controllers;
 
+[Route("api/[controller]")]
 public class MoviesController : ApiController
 {
     private readonly IMovieRepository _movieRepository;
@@ -20,8 +21,17 @@ public class MoviesController : ApiController
         _movieService = movieService;
         _mapper = mapper;
     }
-    
-    
+
+    [HttpGet("/{id:int}")]
+    public async Task<ActionResult<MovieDetailedResponseDto>> GetOneAsync(int id)
+    {
+        var movie = await _movieRepository.FindByIdAsync(id);
+        if (movie is null) return NotFound();
+
+        return CustomResponse(_mapper.Map<MovieDetailedResponseDto>(movie));
+    }
+
+    [HttpGet]
     public async Task<ActionResult<List<MovieResponseDto>>> GetAsync()
     {
         var movies = await _movieRepository.FindAsync();

@@ -26,6 +26,19 @@ public class MovieFixture : IDisposable
         return invalidMovieRequestDto;
     }
 
+    public Movie CreateValidMovie()
+    {
+        return new Movie
+        {
+            Id = 22,
+            Title = "Movie 22",
+            ReleaseDate = DateTime.Now,
+            Summary = "Summary of movie",
+            InTheaters = false,
+            OffTheatersDate = DateTime.Now.AddDays(-10)
+        };
+    }
+    
     public List<Movie> CreateValidMovies()
     {
         var movies = new List<Movie>();

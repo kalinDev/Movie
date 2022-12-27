@@ -5,7 +5,7 @@ namespace MovieApi.Domain.Interfaces;
 public interface IRepository<TEntity>
 {
     Task<IEnumerable<TEntity>> SearchAsync(Expression<Func<TEntity, bool>> predicate);
-    Task<TEntity> FindByIdAsync(Guid id);
+    Task<TEntity> FindByIdAsync(int id);
     Task<List<TEntity>> FindAsync();
     void Add(TEntity entity);
     void Update(TEntity entity);

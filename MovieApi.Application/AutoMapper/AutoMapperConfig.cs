@@ -12,5 +12,6 @@ public class AutoMapperConfig : Profile
     {
         CreateMap<MovieRequestDto, Movie>();
         CreateMap<Movie, MovieResponseDto>();
+        CreateMap<Movie, MovieDetailedResponseDto>();
     }
 }

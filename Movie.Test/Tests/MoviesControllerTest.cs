@@ -46,8 +46,6 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
         result.Should().BeOfType<OkObjectResult>();
     }
 
-    
-    
     [Fact(DisplayName = "AddMovieAsync returns 400 BadRequest")]
     [Trait("Controller", "Movies")]
     public async void AddMovieAsync_ReturnBadRequest()
@@ -63,6 +61,7 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
         //Assert
         _movieServiceMock.Verify(x => x.AddAsync(It.IsAny<Movie>()), Times.Never);
         result.Should().BeOfType<BadRequestObjectResult>();
+        
     }
     
     #endregion
@@ -83,6 +82,45 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
         //Assert
         _movieRepositoryMock.Verify(x => x.FindAsync(), Times.Once);
         result.Should().BeOfType<ActionResult<List<MovieResponseDto>>>();
+        result.Result.Should().BeOfType<OkObjectResult>();
+    }
+
+    #endregion
+    
+    #region GetMovieAsync
+
+    [Fact(DisplayName = "GetOneMovieAsync returns 200 Ok")]
+    [Trait("Controller", "Movies")]
+    public async void GetOneMovieAsync_ReturnOk()
+    {
+        //Arrange
+        var movie = _movieFixture.CreateValidMovie();
+        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(22)).ReturnsAsync(movie);
+        
+        //Act
+        var result = await _controller.GetOneAsync(22);
+        
+        //Assert
+        _movieRepositoryMock.Verify(x => x.FindByIdAsync(22), Times.Once);
+        result.Should().BeOfType<ActionResult<MovieDetailedResponseDto>>();
+        result.Result.Should().BeOfType<OkObjectResult>();
+    }
+    
+    
+    [Fact(DisplayName = "GetOneMovieAsync returns 400 Ok")]
+    [Trait("Controller", "Movies")]
+    public async void GetOneMovieAsync_ReturnBadRequest()
+    {
+        //Arrange
+        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(22)).ReturnsAsync((Movie)null);
+        
+        //Act
+        var result = await _controller.GetOneAsync(22);
+        
+        //Assert
+        _movieRepositoryMock.Verify(x => x.FindByIdAsync(22), Times.Once);
+        result.Should().BeOfType<ActionResult<MovieDetailedResponseDto>>();
+        result.Result.Should().BeOfType<NotFoundResult>();
         
     }
 

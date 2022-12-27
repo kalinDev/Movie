@@ -23,7 +23,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity, 
     public async Task<IEnumerable<TEntity>> SearchAsync(Expression<Func<TEntity, bool>> predicate) =>
         await DbSet.AsNoTracking().Where(predicate).ToListAsync();
 
-    public async Task<TEntity> FindByIdAsync(Guid id) => 
+    public async Task<TEntity> FindByIdAsync(int id) => 
         await DbSet.FindAsync(id);
 
     public async Task<List<TEntity>> FindAsync() =>
