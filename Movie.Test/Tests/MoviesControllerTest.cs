@@ -45,7 +45,7 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
 
         //Assert
 
-        _movieServiceMock.Verify(x => x.AddAsync(It.IsAny<Movie>()), Times.Once);
+        _movieServiceMock.Verify(service => service.AddAsync(It.IsAny<Movie>()), Times.Once);
         result.Should().BeOfType<OkObjectResult>();
     }
 
@@ -62,7 +62,7 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
         var result = await _controller.PostAsync(movieRequestDto);
 
         //Assert
-        _movieServiceMock.Verify(x => x.AddAsync(It.IsAny<Movie>()), Times.Never);
+        _movieServiceMock.Verify(service => service.AddAsync(It.IsAny<Movie>()), Times.Never);
         result.Should().BeOfType<BadRequestObjectResult>();
         
     }
@@ -83,7 +83,7 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
         var result = await _controller.GetAsync();
         
         //Assert
-        _movieRepositoryMock.Verify(x => x.FindAsync(), Times.Once);
+        _movieRepositoryMock.Verify(repository => repository.FindAsync(), Times.Once);
         result.Should().BeOfType<ActionResult<List<MovieResponseDto>>>();
         result.Result.Should().BeOfType<OkObjectResult>();
     }
