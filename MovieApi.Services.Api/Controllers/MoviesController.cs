@@ -70,6 +70,27 @@ public class MoviesController : ApiController
         return CustomResponse();
     }
     
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult> PutAsync(int id, [FromBody] UpdateMovieRequestDto updateMovieRequestDto)
+    {
+        if (id != updateMovieRequestDto.Id)
+        {
+            AddError("The id informed is different from the body.");
+            return CustomResponse();
+        }
+
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+        
+        var movie = await _movieRepository.FindByIdAsync(id);
+        if (movie is null) return NotFound();
+        
+        movie = _mapper.Map<MovieRequestDto, Movie>(updateMovieRequestDto, movie);
+
+        await _movieService.UpdateAsync(movie);
+        
+        return CustomResponse();
+    }
+    
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteAsync(int id)
     {

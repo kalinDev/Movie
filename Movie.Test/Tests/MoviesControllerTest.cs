@@ -134,20 +134,81 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
     public async void GetOneMovieAsync_ReturnBadRequest()
     {
         //Arrange
-        _cachingService.Setup( cache => cache.GetAsync("22")).ReturnsAsync((string)null);
-        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(22)).ReturnsAsync((Movie)null);
+        var movieId = 22;
+        _cachingService.Setup( cache => cache.GetAsync(movieId.ToString())).ReturnsAsync((string)null);
+        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(movieId)).ReturnsAsync((Movie)null);
         
         //Act
-        var result = await _controller.GetOneAsync(22);
+        var result = await _controller.GetOneAsync(movieId);
         
         //Assert
-        _movieRepositoryMock.Verify(repository => repository.FindByIdAsync(22), Times.Once);
+        _movieRepositoryMock.Verify(repository => repository.FindByIdAsync(movieId), Times.Once);
         result.Should().BeOfType<ActionResult<MovieDetailedResponseDto>>();
         result.Result.Should().BeOfType<NotFoundResult>();
         
     }
 
     #endregion
+
+    #region UpdateMovieAsync
+
+    [Fact(DisplayName = "UpdateMovieAsync Returns 200 Ok")]
+    [Trait("Controller", "Movies")]
+    public async void UpdateMovieAsync_ReturnOk()
+    {
+        //Arrange
+        var movie = _movieFixture.CreateValidMovie();
+        var updateMovieRequestDto = _movieFixture.CreateValidUpdateMovieRequestDto();
+        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(movie.Id)).ReturnsAsync(movie);
+        
+        //Act
+        var result = await _controller.PutAsync(movie.Id, updateMovieRequestDto);
+        
+        //Assert
+        _movieRepositoryMock.Verify(repository => repository.FindByIdAsync(movie.Id), Times.Once);
+        _movieServiceMock.Verify(service => service.UpdateAsync(It.IsAny<Movie>()), Times.Once);
+        result.Should().BeOfType<OkObjectResult>();
+    }
+
+    [Fact(DisplayName = "UpdateMovieAsync Returns 400 BadRequest")]
+    [Trait("Controller", "Movies")]
+    public async void UpdateMovieAsync_ReturnBadRequest()
+    {
+        //Arrange
+        var movieId = 22;
+        var updateMovieRequestDto = _movieFixture.CreateValidUpdateMovieRequestDto();
+        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(movieId)).ReturnsAsync((Movie)null);
+        _controller.ModelState.AddModelError("fakeError", "fakeError");
+        
+        //Act
+        var result = await _controller.PutAsync(movieId, updateMovieRequestDto);
+        
+        //Assert
+        _movieRepositoryMock.Verify(repository => repository.FindByIdAsync(movieId), Times.Never);
+        _movieServiceMock.Verify(service => service.UpdateAsync(It.IsAny<Movie>()), Times.Never);
+        result.Should().BeOfType<BadRequestObjectResult>();
+    }
+    
+    [Fact(DisplayName = "UpdateMovieAsync Returns 404 NotFound")]
+    [Trait("Controller", "Movies")]
+    public async void UpdateMovieAsync_ReturnNotFound()
+    {
+        //Arrange
+        var movieId = 22;
+        var updateMovieRequestDto = _movieFixture.CreateValidUpdateMovieRequestDto();
+        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(movieId)).ReturnsAsync((Movie)null);
+        
+        //Act
+        var result = await _controller.PutAsync(movieId, updateMovieRequestDto);
+        
+        //Assert
+        _movieRepositoryMock.Verify(repository => repository.FindByIdAsync(movieId), Times.Once);
+        _movieServiceMock.Verify(service => service.UpdateAsync(It.IsAny<Movie>()), Times.Never);
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    #endregion
+    
     
     #region DeleteMovieAsync
     

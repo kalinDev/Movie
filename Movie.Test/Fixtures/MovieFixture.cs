@@ -17,6 +17,19 @@ public class MovieFixture : IDisposable
         };
     }
 
+    public UpdateMovieRequestDto CreateValidUpdateMovieRequestDto()
+    {
+        return new UpdateMovieRequestDto
+        {
+            Id = 22,
+            Title = "Spirited Away",
+            ReleaseDate = DateTime.Now,
+            Summary = @"Ten-year-old Chihiro Ogino and her parents are traveling to their new home when her father decides to take a shortcut.",
+            InTheaters = false,
+            OffTheatersDate = DateTime.Now.AddDays(-10)
+        };
+    }
+    
     public MovieRequestDto CreateInvalidMovieRequestDto()
     {
         var invalidMovieRequestDto = CreateValidMovieRequestDto();
