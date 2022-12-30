@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MovieApi.Application.DTOs;
 using MovieApi.Application.DTOs.Request;
 using MovieApi.Application.DTOs.Response;
 using MovieApi.Domain.Entities;
