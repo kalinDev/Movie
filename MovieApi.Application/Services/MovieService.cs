@@ -16,5 +16,10 @@ public class MovieService : BaseService, IMovieService
         _movieRepository.Add(movie);
         await _movieRepository.SaveChangesAsync();
     }
-    
+
+    public async Task DeleteByIdAsync(int id)
+    {
+        _movieRepository.Remove(id);
+        await _movieRepository.SaveChangesAsync();
+    }
 }

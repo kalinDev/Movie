@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MovieApi.Application.DTOs.Request;
 using MovieApi.Application.DTOs.Response;
@@ -18,7 +17,12 @@ public class MoviesController : ApiController
     private readonly IMovieService _movieService;
     private readonly IMapper _mapper;
     
-    public MoviesController(ICachingService cachingService,IMovieRepository movieRepository ,IMovieService movieService, IMapper mapper, INotifier notifier) : base (notifier)
+    public MoviesController(
+        ICachingService cachingService,
+        IMovieRepository movieRepository,
+        IMovieService movieService,
+        IMapper mapper,
+        INotifier notifier) : base (notifier)
     {
         _cachingService = cachingService;
         _movieRepository = movieRepository;
@@ -62,6 +66,17 @@ public class MoviesController : ApiController
         var movie = _mapper.Map<MovieRequestDto, Movie>(movieRequestDto);
 
         await _movieService.AddAsync(movie);
+        
+        return CustomResponse();
+    }
+    
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> DeleteAsync(int id)
+    {
+        var movie = await _movieRepository.FindByIdAsync(id);
+        if (movie is null) return NotFound();
+
+        await _movieService.DeleteByIdAsync(movie.Id);
         
         return CustomResponse();
     }

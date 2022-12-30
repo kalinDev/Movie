@@ -148,4 +148,41 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
     }
 
     #endregion
+    
+    #region DeleteMovieAsync
+    
+    [Fact(DisplayName = "DeleteOneMovieAsync Returns 200 Ok")]
+    [Trait("Controller", "Movies")]
+    public async void DeleteOneMovieAsync_ReturnOk()
+    {
+        //Arrange
+        var movie = _movieFixture.CreateValidMovie();
+        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(movie.Id)).ReturnsAsync(movie);
+        
+        //Act
+        var result = await _controller.DeleteAsync(movie.Id);
+        
+        //Assert
+        _movieRepositoryMock.Verify(repository => repository.FindByIdAsync(movie.Id), Times.Once);
+        _movieServiceMock.Verify(service => service.DeleteByIdAsync(movie.Id), Times.Once);
+        result.Should().BeOfType<OkObjectResult>();
+    }
+    
+    [Fact(DisplayName = "DeleteOneMovieAsync Returns 404 NotFound")]
+    [Trait("Controller", "Movies")]
+    public async void DeleteOneMovieAsync_ReturnNotFound()
+    {
+        //Arrange
+        var movie = _movieFixture.CreateValidMovie();
+        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(movie.Id)).ReturnsAsync((Movie)null);
+        
+        //Act
+        var result = await _controller.DeleteAsync(movie.Id);
+        
+        //Assert
+        _movieRepositoryMock.Verify(repository => repository.FindByIdAsync(movie.Id), Times.Once);
+        _movieServiceMock.Verify(service => service.DeleteByIdAsync(movie.Id), Times.Never);
+        result.Should().BeOfType<NotFoundResult>();
+    }
+    #endregion
 }
