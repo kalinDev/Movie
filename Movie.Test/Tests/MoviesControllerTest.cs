@@ -9,11 +9,13 @@ using MovieApi.Controllers;
 using MovieApi.Domain.Entities;
 using MovieApi.Domain.Interfaces;
 using MovieApiTest.Fixtures;
+using Newtonsoft.Json;
 
 namespace MovieApiTest.Tests;
 
 public class MoviesControllerTest : IClassFixture<MovieFixture>
 {
+    private readonly Mock<ICachingService> _cachingService;
     private readonly Mock<IMovieRepository> _movieRepositoryMock;
     private readonly Mock<IMovieService> _movieServiceMock;
     private readonly MoviesController _controller;
@@ -22,15 +24,16 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
     public MoviesControllerTest(MovieFixture movieFixture)
     {
         _movieFixture = movieFixture;
+        _cachingService = new Mock<ICachingService>();
         _movieRepositoryMock = new Mock<IMovieRepository>();
         _movieServiceMock = new Mock<IMovieService>();
         var mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AutoMapperConfig())));
-        _controller = new MoviesController(_movieRepositoryMock.Object, _movieServiceMock.Object, mapper, new Notifier());
+        _controller = new MoviesController(_cachingService.Object, _movieRepositoryMock.Object, _movieServiceMock.Object, mapper, new Notifier());
     }
     
     #region AddMovieAsync
 
-    [Fact(DisplayName = "AddMovieAsync returns 200 Ok")]
+    [Fact(DisplayName = "AddMovieAsync Returns 200 Ok")]
     [Trait("Controller", "Movies")]
     public async void AddMovieAsync_ReturnOk()
     {
@@ -46,7 +49,7 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
         result.Should().BeOfType<OkObjectResult>();
     }
 
-    [Fact(DisplayName = "AddMovieAsync returns 400 BadRequest")]
+    [Fact(DisplayName = "AddMovieAsync Returns 400 BadRequest")]
     [Trait("Controller", "Movies")]
     public async void AddMovieAsync_ReturnBadRequest()
     {
@@ -68,7 +71,7 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
     
     #region GetMovieAsync
 
-    [Fact(DisplayName = "GetMovieAsync returns 200 Ok")]
+    [Fact(DisplayName = "GetMovieAsync Returns 200 Ok")]
     [Trait("Controller", "Movies")]
     public async void GetMovieAsync_ReturnOk()
     {
@@ -89,36 +92,56 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
     
     #region GetMovieAsync
 
-    [Fact(DisplayName = "GetOneMovieAsync returns 200 Ok")]
+    [Fact(DisplayName = "GetOneMovieAsync Without Cache Returns 200 Ok")]
     [Trait("Controller", "Movies")]
-    public async void GetOneMovieAsync_ReturnOk()
+    public async void GetOneMovieAsync_WithoutCache_ReturnOk()
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
-        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(22)).ReturnsAsync(movie);
+        _cachingService.Setup( cache => cache.GetAsync("movie.Id")).ReturnsAsync((string)null);
+        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(movie.Id)).ReturnsAsync(movie);
         
         //Act
-        var result = await _controller.GetOneAsync(22);
+        var result = await _controller.GetOneAsync(movie.Id);
         
         //Assert
-        _movieRepositoryMock.Verify(x => x.FindByIdAsync(22), Times.Once);
+        _cachingService.Verify(cache => cache.GetAsync($"movie_{movie.Id}"), Times.Once);
+        _movieRepositoryMock.Verify(repository => repository.FindByIdAsync(movie.Id), Times.Once);
         result.Should().BeOfType<ActionResult<MovieDetailedResponseDto>>();
         result.Result.Should().BeOfType<OkObjectResult>();
     }
     
+    [Fact(DisplayName = "GetOneMovieAsync With Cache Returns 200 Ok")]
+    [Trait("Controller", "Movies")]
+    public async void GetOneMovieAsync_WithCache_ReturnOk()
+    {
+        //Arrange
+        var movie = _movieFixture.CreateValidMovie();
+        _cachingService.Setup( cache => cache.GetAsync($"movie_{movie.Id}")).ReturnsAsync(JsonConvert.SerializeObject(movie));
+        
+        //Act
+        var result = await _controller.GetOneAsync(movie.Id);
+        
+        //Assert
+        _cachingService.Verify(cache => cache.GetAsync($"movie_{movie.Id}"), Times.Once);
+        _movieRepositoryMock.Verify(repository => repository.FindByIdAsync(movie.Id), Times.Never);
+        result.Should().BeOfType<ActionResult<MovieDetailedResponseDto>>();
+        result.Result.Should().BeOfType<OkObjectResult>();
+    }
     
-    [Fact(DisplayName = "GetOneMovieAsync returns 400 Ok")]
+    [Fact(DisplayName = "GetOneMovieAsync Returns 400 Ok")]
     [Trait("Controller", "Movies")]
     public async void GetOneMovieAsync_ReturnBadRequest()
     {
         //Arrange
+        _cachingService.Setup( cache => cache.GetAsync("22")).ReturnsAsync((string)null);
         _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(22)).ReturnsAsync((Movie)null);
         
         //Act
         var result = await _controller.GetOneAsync(22);
         
         //Assert
-        _movieRepositoryMock.Verify(x => x.FindByIdAsync(22), Times.Once);
+        _movieRepositoryMock.Verify(repository => repository.FindByIdAsync(22), Times.Once);
         result.Should().BeOfType<ActionResult<MovieDetailedResponseDto>>();
         result.Result.Should().BeOfType<NotFoundResult>();
         

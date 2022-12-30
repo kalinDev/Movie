@@ -3,6 +3,7 @@ using MovieApi.Application.Notifications;
 using Microsoft.Extensions.DependencyInjection;
 using MovieApi.Application.Services;
 using MovieApi.Data;
+using MovieApi.Data.Caching;
 using MovieApi.Data.Repositories;
 using MovieApi.Domain.Interfaces;
 
@@ -16,5 +17,6 @@ public static class DependencyInjectionConfig
         services.AddScoped<IMovieService, MovieService>();
         services.AddScoped<IMovieRepository, MovieRepository>();
         services.AddScoped<ApiDbContext>();
+        services.AddScoped<ICachingService, CachingService>();
     }
 }

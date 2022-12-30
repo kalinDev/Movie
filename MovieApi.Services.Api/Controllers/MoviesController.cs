@@ -1,32 +1,45 @@
-﻿using AutoMapper;
+﻿using System.Text.Json.Serialization;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MovieApi.Application.DTOs.Request;
 using MovieApi.Application.DTOs.Response;
 using MovieApi.Application.Interfaces;
 using MovieApi.Domain.Entities;
 using MovieApi.Domain.Interfaces;
+using Newtonsoft.Json;
 
 namespace MovieApi.Controllers;
 
 [Route("api/[controller]")]
 public class MoviesController : ApiController
 {
+    private readonly ICachingService _cachingService;
     private readonly IMovieRepository _movieRepository;
     private readonly IMovieService _movieService;
     private readonly IMapper _mapper;
     
-    public MoviesController(IMovieRepository movieRepository ,IMovieService movieService, IMapper mapper, INotifier notifier) : base (notifier)
+    public MoviesController(ICachingService cachingService,IMovieRepository movieRepository ,IMovieService movieService, IMapper mapper, INotifier notifier) : base (notifier)
     {
+        _cachingService = cachingService;
         _movieRepository = movieRepository;
         _movieService = movieService;
         _mapper = mapper;
     }
 
-    [HttpGet("/{id:int}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<MovieDetailedResponseDto>> GetOneAsync(int id)
     {
+        var movieCache = await _cachingService.GetAsync($"movie_{id}");
+
+        if (movieCache is not null)
+        {
+            return CustomResponse(JsonConvert.DeserializeObject<MovieDetailedResponseDto>(movieCache));
+        }
+
         var movie = await _movieRepository.FindByIdAsync(id);
         if (movie is null) return NotFound();
+
+        await _cachingService.SetAsync($"movie_{movie.Id}", JsonConvert.SerializeObject(movie));
 
         return CustomResponse(_mapper.Map<MovieDetailedResponseDto>(movie));
     }
@@ -34,9 +47,11 @@ public class MoviesController : ApiController
     [HttpGet]
     public async Task<ActionResult<List<MovieResponseDto>>> GetAsync()
     {
+        
         var movies = await _movieRepository.FindAsync();
         
         var moviesDto = _mapper.Map<List<Movie>, List<MovieResponseDto>>(movies);
+        
         return CustomResponse(moviesDto);
     }
 
