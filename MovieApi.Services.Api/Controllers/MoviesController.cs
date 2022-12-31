@@ -88,6 +88,8 @@ public class MoviesController : ApiController
 
         await _movieService.UpdateAsync(movie);
         
+        if (IsOperationValid()) await _cachingService.SetAsync($"movie_{movie.Id}", JsonConvert.SerializeObject(movie));
+        
         return CustomResponse();
     }
     
