@@ -52,6 +52,19 @@ public class MovieFixture : IDisposable
         };
     }
     
+    public Movie CreateInvalidMovie()
+    {
+        return new Movie
+        {
+            Id = 22,
+            Title = "",
+            ReleaseDate = DateTime.Now,
+            Summary = "movie",
+            InTheaters = false,
+            OffTheatersDate = DateTime.Now.AddDays(-10)
+        };
+    }
+    
     public List<Movie> CreateValidMovies()
     {
         var movies = new List<Movie>();

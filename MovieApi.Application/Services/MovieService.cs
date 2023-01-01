@@ -1,4 +1,5 @@
 ﻿using MovieApi.Application.Interfaces;
+using MovieApi.Application.Validations;
 using MovieApi.Domain.Entities;
 using MovieApi.Domain.Interfaces;
 
@@ -13,12 +14,16 @@ public class MovieService : BaseService, IMovieService
     
     public async Task AddAsync(Movie movie)
     {
+        if (!RunValidation(new MovieValidator(), movie)) return;
+        
         _movieRepository.Add(movie);
         await _movieRepository.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(Movie movie)
     {
+        if (!RunValidation(new MovieValidator(), movie)) return;
+
         _movieRepository.Update(movie);
         await _movieRepository.SaveChangesAsync();
     }

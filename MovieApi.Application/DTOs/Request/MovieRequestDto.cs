@@ -5,11 +5,11 @@ namespace MovieApi.Application.DTOs.Request;
 public record MovieRequestDto
 {
     [Required]
-    [MaxLength(100), MinLength(2)]
+    [StringLength(500, MinimumLength = 2)]
     public string Title { get; set; }
     
     [Required]
-    [MaxLength(500)]
+    [StringLength(500, MinimumLength = 10)]
     public string Summary { get; set; }
     
     [Required]
