@@ -6,7 +6,7 @@ public record MovieResponseDto
 
     public string Title { get; set; }
     
-    public bool InTheaters { get; set; }
+    public string PosterUri { get; set; }
     
     public DateTime ReleaseDate { get; set; }
     

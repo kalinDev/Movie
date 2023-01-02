@@ -8,7 +8,7 @@ public record MovieDetailedResponseDto
     
     public string Summary { get; set; }
     
-    public bool InTheaters { get; set; }
+    public string Poster { get; set; }
     
     public DateTime ReleaseDate { get; set; }
     

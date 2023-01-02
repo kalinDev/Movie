@@ -12,7 +12,7 @@ public class MovieFixture : IDisposable
             Title = "Spirited Away",
             ReleaseDate = DateTime.Now,
             Summary = @"Ten-year-old Chihiro Ogino and her parents are traveling to their new home when her father decides to take a shortcut.",
-            InTheaters = false,
+            PosterUri = "https://m.media-amazon.com/images/M/MV5BZDQyODUwM2MtNzA0YS00ZjdmLTgzMjItZWRjN2YyYWE5ZTNjXkEyXkFqcGdeQXVyMTI2MzY1MjM1._V1_.jpg",
             OffTheatersDate = DateTime.Now.AddDays(-10)
         };
     }
@@ -25,8 +25,8 @@ public class MovieFixture : IDisposable
             Title = "Spirited Away",
             ReleaseDate = DateTime.Now,
             Summary = @"Ten-year-old Chihiro Ogino and her parents are traveling to their new home when her father decides to take a shortcut.",
-            InTheaters = false,
-            OffTheatersDate = DateTime.Now.AddDays(-10)
+            PosterUri = "https://m.media-amazon.com/images/M/MV5BZDQyODUwM2MtNzA0YS00ZjdmLTgzMjItZWRjN2YyYWE5ZTNjXkEyXkFqcGdeQXVyMTI2MzY1MjM1._V1_.jpg",
+            OffTheatersDate = DateTime.Now.AddDays(+10)
         };
     }
     
@@ -47,8 +47,8 @@ public class MovieFixture : IDisposable
             Title = "Movie 22",
             ReleaseDate = DateTime.Now,
             Summary = "Summary of movie",
-            InTheaters = false,
-            OffTheatersDate = DateTime.Now.AddDays(-10)
+            PosterUri = "https://m.media-amazon.com/images/M/MV5BZDQyODUwM2MtNzA0YS00ZjdmLTgzMjItZWRjN2YyYWE5ZTNjXkEyXkFqcGdeQXVyMTI2MzY1MjM1._V1_.jpg",
+            OffTheatersDate = DateTime.Now.AddDays(+10)
         };
     }
     
@@ -60,7 +60,7 @@ public class MovieFixture : IDisposable
             Title = "",
             ReleaseDate = DateTime.Now,
             Summary = "movie",
-            InTheaters = false,
+            PosterUri = "https://m.media-amazon.com/images/M/MV5BZDQyODUwM2MtNzA0YS00ZjdmLTgzMjItZWRjN2YyYWE5ZTNjXkEyXkFqcGdeQXVyMTI2MzY1MjM1._V1_.jpg",
             OffTheatersDate = DateTime.Now.AddDays(-10)
         };
     }
@@ -77,8 +77,8 @@ public class MovieFixture : IDisposable
                 Title = $"Movie {i}",
                 ReleaseDate = DateTime.Now,
                 Summary = $"Summary {i}",
-                InTheaters = false,
-                OffTheatersDate = DateTime.Now.AddDays(-10)
+                PosterUri = "https://m.media-amazon.com/images/M/MV5BZDQyODUwM2MtNzA0YS00ZjdmLTgzMjItZWRjN2YyYWE5ZTNjXkEyXkFqcGdeQXVyMTI2MzY1MjM1._V1_.jpg",
+                OffTheatersDate = DateTime.Now.AddDays(+10)
             });
         }
 

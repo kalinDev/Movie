@@ -5,15 +5,13 @@ namespace MovieApi.Application.DTOs.Request;
 public record MovieRequestDto
 {
     [Required]
-    [StringLength(500, MinimumLength = 2)]
     public string Title { get; set; }
     
     [Required]
-    [StringLength(500, MinimumLength = 10)]
     public string Summary { get; set; }
     
     [Required]
-    public bool InTheaters { get; set; }
+    public string PosterUri { get; set; }
     
     [Required]
     public DateTime ReleaseDate { get; set; }

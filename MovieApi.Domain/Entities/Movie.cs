@@ -6,9 +6,9 @@ public class Movie : Entity
     
     public string Summary { get; set; }
     
-    public bool InTheaters { get; set; }
-    
     public DateTime ReleaseDate { get; set; }
     
     public DateTime OffTheatersDate { get; set; }
+    
+    public string PosterUri { get; set; }
 }

@@ -49,6 +49,17 @@ public class MoviesController : ApiController
     }
 
     [HttpGet]
+    public async Task<ActionResult<List<MovieResponseDto>>> GetMoviesInTheatersAsync()
+    {
+        
+        var movies = await _movieRepository.SearchAsync(movie => movie.OffTheatersDate < DateTime.Now);
+        
+        var moviesDto = _mapper.Map<List<Movie>, List<MovieResponseDto>>(movies.ToList());
+        
+        return CustomResponse(moviesDto);
+    }
+
+    [HttpGet("All")]
     public async Task<ActionResult<List<MovieResponseDto>>> GetAsync()
     {
         
@@ -58,7 +69,7 @@ public class MoviesController : ApiController
         
         return CustomResponse(moviesDto);
     }
-
+    
     [HttpPost]
     public async Task<ActionResult> PostAsync([FromBody] MovieRequestDto movieRequestDto)
     {

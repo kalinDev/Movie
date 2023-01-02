@@ -54,9 +54,9 @@ public abstract class ApiController : ControllerBase
         return !_notifier.HasNotification();
     }
 
-    protected void AddError(string erro)
+    protected void AddError(string error)
     {
-        _notifier.Handle(new Notification(erro));
+        _notifier.Handle(new Notification(error));
     }
 
 }

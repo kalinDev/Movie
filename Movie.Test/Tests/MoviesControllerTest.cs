@@ -89,6 +89,27 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
     }
 
     #endregion
+
+    #region GetMoviesInTheatersAsync
+    [Fact(DisplayName = "GetMoviesInTheatersAsync Returns 200 Ok")]
+    [Trait("Controller", "Movies")]
+    public async void GetMoviesInTheatersAsync_ReturnOk()
+    {
+        //Arrange
+        var movies = _movieFixture.CreateValidMovies();
+        _movieRepositoryMock.Setup(repository => repository.FindAsync()).ReturnsAsync(movies);
+        
+        //Act
+        var result = await _controller.GetMoviesInTheatersAsync();
+        
+        //Assert
+        _movieRepositoryMock.Verify(repository => repository.SearchAsync(movie => movie.OffTheatersDate < DateTime.Now), Times.Once);
+        result.Should().BeOfType<ActionResult<List<MovieResponseDto>>>();
+        result.Result.Should().BeOfType<OkObjectResult>();
+    }
+    
+
+    #endregion
     
     #region GetMovieAsync
 
@@ -230,7 +251,6 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
     }
 
     #endregion
-    
     
     #region DeleteMovieAsync
     
