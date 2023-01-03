@@ -16,5 +16,6 @@ public class MovieValidator : AbstractValidator<Movie>
         RuleFor(x => x.ReleaseDate).GreaterThan(DateTime.Now.AddDays(-1)).LessThan(DateTime.Now.AddYears(1)).NotEmpty();
         RuleFor(x => x.OffTheatersDate).GreaterThan(x => x.ReleaseDate).NotEmpty();
         RuleFor(x => x.Room).IsInEnum();
+        RuleFor(x => x.Duration).GreaterThanOrEqualTo(TimeSpan.FromMinutes(10)).NotEmpty();
     }
 }

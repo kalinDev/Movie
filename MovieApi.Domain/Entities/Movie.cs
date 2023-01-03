@@ -15,4 +15,6 @@ public class Movie : Entity
     public string PosterUri { get; set; }
     
     public Room Room { get; set; }
+    
+    public TimeSpan Duration { get; set; }
 }

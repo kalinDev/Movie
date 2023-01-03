@@ -278,9 +278,9 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     
     #region ValidateRoom
 
-    [Fact(DisplayName = "ValidateRoom With Valid Value Returns Success")]
+    [Fact(DisplayName = "ValidateRoom Returns Success")]
     [Trait("Validator", "Movies")]
-    public void ValidateRoom_WithValidValue_ReturnSuccess()
+    public void ValidateRoom_ReturnSuccess()
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -296,9 +296,9 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
         result.Errors.Should().NotContain(e => e.PropertyName == "Room");
     }
     
-    [Fact(DisplayName = "ValidateRoom With Invalid Value Returns Error")]
+    [Fact(DisplayName = "ValidateRoom Returns Error")]
     [Trait("Validator", "Movies")]
-    public void ValidateRoom_WithInvalidValue_ReturnError()
+    public void ValidateRoom_ReturnError()
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -313,5 +313,48 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
         result.IsValid.Should().BeFalse();
         result.Errors.Should().Contain(e => e.PropertyName == "Room");
     }
+    #endregion
+
+    #region ValidateDuration
+
+    [Theory(DisplayName = "ValidateDuration Returns Success")]
+    [InlineData(10)]
+    [InlineData(120)]
+    [Trait("Validator", "Movies")]
+    public void ValidateDuration_ReturnSuccess(int minutes)
+    {
+        //Arrange
+        var movie = _movieFixture.CreateValidMovie();
+        movie.Duration = TimeSpan.FromMinutes(minutes);      
+        var movieValidator = new MovieValidator();
+        
+        //Act
+        var result = movieValidator.Validate(movie);
+        
+        //Assert
+        result.IsValid.Should().BeTrue();
+        result.Errors.Should().NotContain(e => e.PropertyName == "Duration");
+    }
+
+    [Theory(DisplayName = "ValidateDuration Returns Error")]
+    [InlineData(0)]
+    [InlineData(9)]
+    [Trait("Validator", "Movies")]
+    public void ValidateDuration_ReturnError(int minutes)
+    {
+        //Arrange
+        var movie = _movieFixture.CreateValidMovie();
+        movie.Duration = TimeSpan.FromMinutes(minutes);    
+        
+        var movieValidator = new MovieValidator();
+        
+        //Act
+        var result = movieValidator.Validate(movie);
+        
+        //Assert
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.PropertyName == "Duration");
+    }
+    
     #endregion
 }

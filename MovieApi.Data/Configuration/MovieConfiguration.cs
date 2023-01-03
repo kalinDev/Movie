@@ -17,5 +17,6 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
         builder.Property(m => m.OffTheatersDate).IsRequired();
         builder.Property(m => m.PosterUri).HasMaxLength(150).IsRequired();
         builder.Property(m => m.Room).IsRequired();
+        builder.Property(m => m.Duration).IsRequired();
     }
 }

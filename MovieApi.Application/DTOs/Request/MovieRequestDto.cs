@@ -22,5 +22,8 @@ public record MovieRequestDto
     
     [Required]
     public Room Room { get; set; }
+    
+    [Required]
+    public TimeSpan TimeSpan { get; set; }
 
 }
