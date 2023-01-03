@@ -10,7 +10,9 @@ public class MovieValidator : AbstractValidator<Movie>
         RuleFor(x => x.Title).Length(2, 100).NotEmpty();
         RuleFor(x => x.Summary).Length(10, 500).NotEmpty();
         RuleFor(x => x.PosterUri).Must(uri => 
-            Uri.TryCreate(uri, UriKind.Absolute, out _)).When(x => !string.IsNullOrEmpty(x.PosterUri)).NotEmpty();
+            Uri.TryCreate(uri, UriKind.Absolute, out _)).When(x => !string.IsNullOrEmpty(x.PosterUri))
+            .MaximumLength(150)
+            .NotEmpty();
         RuleFor(x => x.ReleaseDate).GreaterThan(DateTime.Now.AddDays(-1)).LessThan(DateTime.Now.AddYears(1)).NotEmpty();
         RuleFor(x => x.OffTheatersDate).GreaterThan(x => x.ReleaseDate).NotEmpty();
     }
