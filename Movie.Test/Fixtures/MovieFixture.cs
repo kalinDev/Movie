@@ -1,5 +1,6 @@
 ﻿using MovieApi.Application.DTOs.Request;
 using MovieApi.Domain.Entities;
+using MovieApi.Domain.Enums;
 
 namespace MovieApiTest.Fixtures;
 
@@ -13,7 +14,8 @@ public class MovieFixture : IDisposable
             ReleaseDate = DateTime.Now,
             Summary = @"Ten-year-old Chihiro Ogino and her parents are traveling to their new home when her father decides to take a shortcut.",
             PosterUri = "https://m.media-amazon.com/images/M/MV5BZDQyODUwM2MtNzA0YS00ZjdmLTgzMjItZWRjN2YyYWE5ZTNjXkEyXkFqcGdeQXVyMTI2MzY1MjM1._V1_.jpg",
-            OffTheatersDate = DateTime.Now.AddDays(-10)
+            OffTheatersDate = DateTime.Now.AddDays(-10),
+            Room = Room.Imax
         };
     }
 
@@ -26,7 +28,8 @@ public class MovieFixture : IDisposable
             ReleaseDate = DateTime.Now,
             Summary = @"Ten-year-old Chihiro Ogino and her parents are traveling to their new home when her father decides to take a shortcut.",
             PosterUri = "https://m.media-amazon.com/images/M/MV5BZDQyODUwM2MtNzA0YS00ZjdmLTgzMjItZWRjN2YyYWE5ZTNjXkEyXkFqcGdeQXVyMTI2MzY1MjM1._V1_.jpg",
-            OffTheatersDate = DateTime.Now.AddDays(+10)
+            OffTheatersDate = DateTime.Now.AddDays(+10),
+            Room = Room.Imax
         };
     }
     
@@ -48,7 +51,8 @@ public class MovieFixture : IDisposable
             ReleaseDate = DateTime.Now,
             Summary = "Summary of movie",
             PosterUri = "https://m.media-amazon.com/images/M/MV5BZDQyODUwM2MtNzA0YS00ZjdmLTgzMjItZWRjN2YyYWE5ZTNjXkEyXkFqcGdeQXVyMTI2MzY1MjM1._V1_.jpg",
-            OffTheatersDate = DateTime.Now.AddDays(+10)
+            OffTheatersDate = DateTime.Now.AddDays(+10),
+            Room = Room.Imax
         };
     }
     
@@ -61,7 +65,8 @@ public class MovieFixture : IDisposable
             ReleaseDate = DateTime.Now,
             Summary = "movie",
             PosterUri = "https://m.media-amazon.com/images/M/MV5BZDQyODUwM2MtNzA0YS00ZjdmLTgzMjItZWRjN2YyYWE5ZTNjXkEyXkFqcGdeQXVyMTI2MzY1MjM1._V1_.jpg",
-            OffTheatersDate = DateTime.Now.AddDays(-10)
+            OffTheatersDate = DateTime.Now.AddDays(-10),
+            Room = Room.Imax
         };
     }
     
@@ -78,7 +83,8 @@ public class MovieFixture : IDisposable
                 ReleaseDate = DateTime.Now,
                 Summary = $"Summary {i}",
                 PosterUri = "https://m.media-amazon.com/images/M/MV5BZDQyODUwM2MtNzA0YS00ZjdmLTgzMjItZWRjN2YyYWE5ZTNjXkEyXkFqcGdeQXVyMTI2MzY1MjM1._V1_.jpg",
-                OffTheatersDate = DateTime.Now.AddDays(+10)
+                OffTheatersDate = DateTime.Now.AddDays(+10),
+                Room = Room.Imax
             });
         }
 

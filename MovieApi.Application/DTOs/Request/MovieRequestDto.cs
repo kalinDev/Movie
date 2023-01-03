@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MovieApi.Domain.Enums;
 
 namespace MovieApi.Application.DTOs.Request;
 
@@ -18,5 +19,8 @@ public record MovieRequestDto
     
     [Required]
     public DateTime OffTheatersDate { get; set; }
+    
+    [Required]
+    public Room Room { get; set; }
 
 }

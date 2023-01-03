@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using MovieApi.Application.Validations;
+using MovieApi.Domain.Enums;
 using MovieApiTest.Fixtures;
 
 namespace MovieApiTest.Tests;
@@ -16,7 +17,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     
     [Fact(DisplayName = "Validate All Properties Of Movie")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidateMovie()
+    public void ValidateMovie_ReturnSuccess()
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();        
@@ -37,7 +38,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     [InlineData("")]
     [InlineData("C")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidateTitle_ReturnError(string title)
+    public void ValidateTitle_ReturnError(string title)
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -55,7 +56,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     [Theory(DisplayName = "ValidateTitle Returns Success")]
     [InlineData("Minions the rise of gru")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidateTitle_ReturnSuccess(string title)
+    public void ValidateTitle_ReturnSuccess(string title)
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -78,7 +79,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     [InlineData("")]
     [InlineData("The Movie")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidateSummary_ReturnError(string summary)
+    public void ValidateSummary_ReturnError(string summary)
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -100,7 +101,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
  high-energy adventure in motion.")]
     [InlineData("The Movie is a movie about a young boy")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidateSummary_ReturnSuccess(string summary)
+    public void ValidateSummary_ReturnSuccess(string summary)
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -122,7 +123,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     [Theory(DisplayName = "ValidatePosterUri Returns Success")]
     [InlineData("https://google.com/")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidatePosterUri_ReturnSuccess(string posterUri)
+    public void ValidatePosterUri_ReturnSuccess(string posterUri)
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -142,7 +143,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     [InlineData("google.com")]
     [InlineData("www.google.com")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidatePosterUri_ReturnError(string posterUri)
+    public void ValidatePosterUri_ReturnError(string posterUri)
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -164,7 +165,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     
     [Fact(DisplayName = "ValidateReleaseDate With Current Date Apart Returns Success")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidateReleaseDate_WithCurrentDate_ReturnSuccess()
+    public void ValidateReleaseDate_WithCurrentDate_ReturnSuccess()
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -182,7 +183,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     
     [Fact(DisplayName = "ValidateReleaseDate With Up To 24 Hours Apart Returns Success")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidateReleaseDate_WithUpTo24h_ReturnSuccess()
+    public void ValidateReleaseDate_WithUpTo24h_ReturnSuccess()
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -199,7 +200,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     
     [Fact(DisplayName = "ValidateReleaseDate With More Than 24 Hours apart Returns Error")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidateReleaseDate_WithMoreThan24h_ReturnError()
+    public void ValidateReleaseDate_WithMoreThan24h_ReturnError()
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -216,7 +217,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     
     [Fact(DisplayName = "ValidateReleaseDate With A Year Early apart Returns Error")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidateReleaseDate_WithYearEarly_ReturnError()
+    public void ValidateReleaseDate_WithYearEarly_ReturnError()
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -238,7 +239,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
 
     [Fact(DisplayName = "ValidateOffTheatersDate Returns Success")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidateOffTheatersDate_ReturnSuccess()
+    public void ValidateOffTheatersDate_ReturnSuccess()
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -257,7 +258,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
 
     [Fact(DisplayName = "ValidateOffTheatersDate With Date Less Than Release Returns Error")]
     [Trait("Validator", "Movies")]
-    public void MovieValidator_ValidateOffTheatersDate_WithDateLessThanRelease_ReturnSuccess()
+    public void ValidateOffTheatersDate_WithDateLessThanRelease_ReturnSuccess()
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
@@ -272,6 +273,45 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
         //Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().Contain(e => e.PropertyName == "OffTheatersDate");
+    }
+    #endregion
+    
+    #region ValidateRoom
+
+    [Fact(DisplayName = "ValidateRoom With Valid Value Returns Success")]
+    [Trait("Validator", "Movies")]
+    public void ValidateRoom_WithValidValue_ReturnSuccess()
+    {
+        //Arrange
+        var movie = _movieFixture.CreateValidMovie();
+        movie.Room = Room.Imax;
+        
+        var movieValidator = new MovieValidator();
+        
+        //Act
+        var result = movieValidator.Validate(movie);
+        
+        //Assert
+        result.IsValid.Should().BeTrue();
+        result.Errors.Should().NotContain(e => e.PropertyName == "Room");
+    }
+    
+    [Fact(DisplayName = "ValidateRoom With Invalid Value Returns Error")]
+    [Trait("Validator", "Movies")]
+    public void ValidateRoom_WithInvalidValue_ReturnError()
+    {
+        //Arrange
+        var movie = _movieFixture.CreateValidMovie();
+        movie.Room = (Room)300;
+        
+        var movieValidator = new MovieValidator();
+        
+        //Act
+        var result = movieValidator.Validate(movie);
+        
+        //Assert
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.PropertyName == "Room");
     }
     #endregion
 }

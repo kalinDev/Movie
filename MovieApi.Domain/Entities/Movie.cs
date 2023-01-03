@@ -1,4 +1,6 @@
-﻿namespace MovieApi.Domain.Entities;
+﻿using MovieApi.Domain.Enums;
+
+namespace MovieApi.Domain.Entities;
 
 public class Movie : Entity
 {
@@ -11,4 +13,6 @@ public class Movie : Entity
     public DateTime OffTheatersDate { get; set; }
     
     public string PosterUri { get; set; }
+    
+    public Room Room { get; set; }
 }

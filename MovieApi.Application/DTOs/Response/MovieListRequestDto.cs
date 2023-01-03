@@ -1,4 +1,6 @@
-﻿namespace MovieApi.Application.DTOs.Response;
+﻿using MovieApi.Domain.Enums;
+
+namespace MovieApi.Application.DTOs.Response;
 
 public record MovieResponseDto
 {
@@ -12,4 +14,5 @@ public record MovieResponseDto
     
     public DateTime OffTheatersDate { get; set; }
     
+    public Room Room { get; set; } 
 }
