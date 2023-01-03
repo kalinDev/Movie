@@ -260,13 +260,13 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
-        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(movie.Id)).ReturnsAsync(movie);
+        _movieRepositoryMock.Setup(repository => repository.AnyAsync(movie.Id)).ReturnsAsync(true);
         
         //Act
         var result = await _controller.DeleteAsync(movie.Id);
         
         //Assert
-        _movieRepositoryMock.Verify(repository => repository.FindByIdAsync(movie.Id), Times.Once);
+        _movieRepositoryMock.Verify(repository => repository.AnyAsync(movie.Id), Times.Once);
         _movieServiceMock.Verify(service => service.DeleteByIdAsync(movie.Id), Times.Once);
         result.Should().BeOfType<OkObjectResult>();
     }
@@ -277,13 +277,13 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
     {
         //Arrange
         var movie = _movieFixture.CreateValidMovie();
-        _movieRepositoryMock.Setup(repository => repository.FindByIdAsync(movie.Id)).ReturnsAsync((Movie)null);
+        _movieRepositoryMock.Setup(repository => repository.AnyAsync(movie.Id)).ReturnsAsync(false);
         
         //Act
         var result = await _controller.DeleteAsync(movie.Id);
         
         //Assert
-        _movieRepositoryMock.Verify(repository => repository.FindByIdAsync(movie.Id), Times.Once);
+        _movieRepositoryMock.Verify(repository => repository.AnyAsync(movie.Id), Times.Once);
         _movieServiceMock.Verify(service => service.DeleteByIdAsync(movie.Id), Times.Never);
         result.Should().BeOfType<NotFoundResult>();
     }

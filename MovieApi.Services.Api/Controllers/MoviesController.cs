@@ -107,10 +107,10 @@ public class MoviesController : ApiController
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteAsync(int id)
     {
-        var movie = await _movieRepository.FindByIdAsync(id);
-        if (movie is null) return NotFound();
+        var exist = await _movieRepository.AnyAsync(id);
+        if (!exist) return NotFound();
 
-        await _movieService.DeleteByIdAsync(movie.Id);
+        await _movieService.DeleteByIdAsync(id);
         
         return CustomResponse();
     }
