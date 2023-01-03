@@ -26,6 +26,7 @@ builder.Services.AddStackExchangeRedisCache(o =>
     o.InstanceName = "MovieApi";
     o.Configuration = "localhost:6379";
 });
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 builder.Services.AddDbContext<ApiDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

@@ -10,4 +10,6 @@ public record MovieResponseDto
     
     public DateTime ReleaseDate { get; set; }
     
+    public DateTime OffTheatersDate { get; set; }
+    
 }

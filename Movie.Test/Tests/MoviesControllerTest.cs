@@ -103,7 +103,7 @@ public class MoviesControllerTest : IClassFixture<MovieFixture>
         var result = await _controller.GetMoviesInTheatersAsync();
         
         //Assert
-        _movieRepositoryMock.Verify(repository => repository.SearchAsync(movie => movie.OffTheatersDate < DateTime.Now), Times.Once);
+        _movieRepositoryMock.Verify(repository => repository.SearchAsync(movie => movie.OffTheatersDate > DateTime.Now), Times.Once);
         result.Should().BeOfType<ActionResult<List<MovieResponseDto>>>();
         result.Result.Should().BeOfType<OkObjectResult>();
     }

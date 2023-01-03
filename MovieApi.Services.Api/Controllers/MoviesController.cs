@@ -52,7 +52,7 @@ public class MoviesController : ApiController
     public async Task<ActionResult<List<MovieResponseDto>>> GetMoviesInTheatersAsync()
     {
         
-        var movies = await _movieRepository.SearchAsync(movie => movie.OffTheatersDate < DateTime.Now);
+        var movies = await _movieRepository.SearchAsync(movie => movie.OffTheatersDate > DateTime.Now);
         
         var moviesDto = _mapper.Map<List<Movie>, List<MovieResponseDto>>(movies.ToList());
         
