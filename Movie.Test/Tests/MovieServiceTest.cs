@@ -1,7 +1,10 @@
-﻿using FluentAssertions;
+﻿using AutoMapper;
+using FluentAssertions;
 using Moq;
+using MovieApi.Application.AutoMapper;
 using MovieApi.Application.Notifications;
 using MovieApi.Application.Services;
+using MovieApi.Domain.Entities;
 using MovieApi.Domain.Interfaces;
 using MovieApiTest.Fixtures;
 
@@ -20,7 +23,8 @@ public class MovieServiceTest: IClassFixture<MovieFixture>
         _notifier = new Notifier();
         _movieFixture = movieFixture;
         _movieRepositoryMock = new Mock<IMovieRepository>();
-        _movieService = new MovieService(_movieRepositoryMock.Object, _notifier);
+        var mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(new AutoMapperConfig())));
+        _movieService = new MovieService(_movieRepositoryMock.Object, mapper, _notifier);
     }
 
     #region AddMovieAsync
@@ -30,14 +34,14 @@ public class MovieServiceTest: IClassFixture<MovieFixture>
     public async void AddMovieAsync_Success()
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movieRequestDto = _movieFixture.ValidMovieRequestDto();
         
         //Act
-        await _movieService.AddAsync(movie);
+        await _movieService.AddAsync(movieRequestDto);
 
         //Assert
         _notifier.HasNotification().Should().BeFalse();
-        _movieRepositoryMock.Verify(repository => repository.Add(movie), Times.Once);
+        _movieRepositoryMock.Verify(repository => repository.Add(It.IsAny<Movie>()), Times.Once);
         _movieRepositoryMock.Verify(repository => repository.SaveChangesAsync(), Times.Once);
     }
     
@@ -46,14 +50,14 @@ public class MovieServiceTest: IClassFixture<MovieFixture>
     public async void AddMovieAsync_Fail()
     {
         //Arrange
-        var invalidMovie = _movieFixture.CreateInvalidMovie();
+        var movieRequestDto = _movieFixture.InvalidMovieRequestDto();
         
         //Act
-        await _movieService.AddAsync(invalidMovie);
+        await _movieService.AddAsync(movieRequestDto);
 
         //Assert
         _notifier.HasNotification().Should().BeTrue();
-        _movieRepositoryMock.Verify(repository => repository.Add(invalidMovie), Times.Never);
+        _movieRepositoryMock.Verify(repository => repository.Add(It.IsAny<Movie>()), Times.Never);
         _movieRepositoryMock.Verify(repository => repository.SaveChangesAsync(), Times.Never);
     }
 
@@ -66,14 +70,14 @@ public class MovieServiceTest: IClassFixture<MovieFixture>
     public async void UpdateMovieAsync_Success()
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var updateMovieRequestDto = _movieFixture.ValidUpdateMovieRequestDto();
         
         //Act
-        await _movieService.UpdateAsync(movie);
+        await _movieService.UpdateAsync(updateMovieRequestDto);
 
         //Assert
         _notifier.HasNotification().Should().BeFalse();
-        _movieRepositoryMock.Verify(repository => repository.Update(movie), Times.Once);
+        _movieRepositoryMock.Verify(repository => repository.Update(It.IsAny<Movie>()), Times.Once);
         _movieRepositoryMock.Verify(repository => repository.SaveChangesAsync(), Times.Once);
     }
     
@@ -82,14 +86,14 @@ public class MovieServiceTest: IClassFixture<MovieFixture>
     public async void UpdateMovieAsync_Fail()
     {
         //Arrange
-        var invalidMovie = _movieFixture.CreateInvalidMovie();
+        var invalidMovie = _movieFixture.InvalidUpdateMovieRequestDto();
         
         //Act
         await _movieService.UpdateAsync(invalidMovie);
 
         //Assert
         _notifier.HasNotification().Should().BeTrue();
-        _movieRepositoryMock.Verify(repository => repository.Update(invalidMovie), Times.Never);
+        _movieRepositoryMock.Verify(repository => repository.Update(It.IsAny<Movie>()), Times.Never);
         _movieRepositoryMock.Verify(repository => repository.SaveChangesAsync(), Times.Never);
     }
 
@@ -102,13 +106,13 @@ public class MovieServiceTest: IClassFixture<MovieFixture>
     public async void RemoveMovieAsync_Success()
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        const int movieId = 22;
         
         //Act
-        await _movieService.DeleteByIdAsync(movie.Id);
+        await _movieService.DeleteByIdAsync(movieId);
 
         //Assert
-        _movieRepositoryMock.Verify(repository => repository.Remove(movie.Id), Times.Once);
+        _movieRepositoryMock.Verify(repository => repository.Remove(movieId), Times.Once);
         _movieRepositoryMock.Verify(repository => repository.SaveChangesAsync(), Times.Once);
     }
 

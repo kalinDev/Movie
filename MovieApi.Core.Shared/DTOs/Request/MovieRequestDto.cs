@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MovieApi.Domain.Enums;
 
-namespace MovieApi.Application.DTOs.Request;
+namespace MovieApi.Core.Shared.DTOs.Request;
 
 public record MovieRequestDto
 {
@@ -24,6 +24,6 @@ public record MovieRequestDto
     public Room Room { get; set; }
     
     [Required]
-    public TimeSpan TimeSpan { get; set; }
+    public TimeSpan Duration { get; set; }
 
 }

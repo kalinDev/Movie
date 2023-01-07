@@ -29,20 +29,14 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity, 
     public async Task<List<TEntity>> FindAsync() =>
         await DbSet.ToListAsync();
 
-    public void Add(TEntity entity)
-    {
+    public void Add(TEntity entity) =>
         DbSet.Add(entity);
-    }
 
-    public void Update(TEntity entity)
-    {
+    public void Update(TEntity entity) =>
         DbSet.Update(entity);
-    }
 
-    public void Remove(int id)
-    {
+    public void Remove(int id) =>
         DbSet.Remove(new TEntity { Id = id });
-    }
 
     public async Task<bool> AnyAsync(int id) =>
         await DbSet.AnyAsync(e => e.Id == id);

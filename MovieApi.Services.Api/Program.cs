@@ -23,9 +23,10 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddStackExchangeRedisCache(o =>
 {
-    o.InstanceName = "MovieApi";
-    o.Configuration = "localhost:6379";
+    o.InstanceName = builder.Configuration.GetValue<string>("Redis:InstanceName");
+    o.Configuration = builder.Configuration.GetValue<string>("Redis:Configuration");
 });
+
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 builder.Services.AddDbContext<ApiDbContext>(options =>

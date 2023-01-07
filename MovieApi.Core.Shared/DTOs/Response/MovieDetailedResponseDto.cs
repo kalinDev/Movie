@@ -1,4 +1,4 @@
-﻿namespace MovieApi.Application.DTOs.Response;
+﻿namespace MovieApi.Core.Shared.DTOs.Response;
 
 public record MovieDetailedResponseDto : MovieResponseDto
 {

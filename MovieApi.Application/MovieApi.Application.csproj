@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MovieApi.Core.Shared\MovieApi.Core.Shared.csproj" />
       <ProjectReference Include="..\MovieApi.Domain\MovieApi.Domain.csproj" />
     </ItemGroup>
 

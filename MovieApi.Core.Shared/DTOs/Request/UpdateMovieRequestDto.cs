@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MovieApi.Application.DTOs.Request;
+namespace MovieApi.Core.Shared.DTOs.Request;
 
 public record UpdateMovieRequestDto : MovieRequestDto
 {

@@ -20,7 +20,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateMovie_ReturnSuccess()
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();        
+        var movie = _movieFixture.ValidMovie();        
         var movieValidator = new MovieValidator();
         
         //Act
@@ -41,7 +41,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateTitle_ReturnError(string title)
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.Title = title;
         var movieValidator = new MovieValidator();
         
@@ -59,7 +59,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateTitle_ReturnSuccess(string title)
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.Title = title;
         var movieValidator = new MovieValidator();
         
@@ -82,7 +82,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateSummary_ReturnError(string summary)
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.Summary = summary;
         var movieValidator = new MovieValidator();
         
@@ -104,7 +104,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateSummary_ReturnSuccess(string summary)
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.Summary = summary;
         var movieValidator = new MovieValidator();
         
@@ -126,7 +126,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidatePosterUri_ReturnSuccess(string posterUri)
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.PosterUri = posterUri;
         var movieValidator = new MovieValidator();
         
@@ -146,7 +146,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidatePosterUri_ReturnError(string posterUri)
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.PosterUri = posterUri;
         var movieValidator = new MovieValidator();
         
@@ -168,7 +168,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateReleaseDate_WithCurrentDate_ReturnSuccess()
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.ReleaseDate = DateTime.Now.AddDays(-1).AddMinutes(1);
         var movieValidator = new MovieValidator();
         
@@ -186,7 +186,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateReleaseDate_WithUpTo24h_ReturnSuccess()
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.ReleaseDate = DateTime.Now.AddDays(-1).AddMinutes(1);
         var movieValidator = new MovieValidator();
         
@@ -203,7 +203,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateReleaseDate_WithMoreThan24h_ReturnError()
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.ReleaseDate = DateTime.Now.AddDays(-1);
         var movieValidator = new MovieValidator();
         
@@ -220,7 +220,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateReleaseDate_WithYearEarly_ReturnError()
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.ReleaseDate = DateTime.Now.AddYears(1).AddMinutes(1);
         
         var movieValidator = new MovieValidator();
@@ -242,7 +242,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateOffTheatersDate_ReturnSuccess()
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.ReleaseDate = DateTime.Now;
         movie.OffTheatersDate = DateTime.Now.AddDays(1);
         
@@ -261,7 +261,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateOffTheatersDate_WithDateLessThanRelease_ReturnSuccess()
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.ReleaseDate = DateTime.Now;
         movie.OffTheatersDate = DateTime.Now.AddDays(-1);
         
@@ -283,7 +283,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateRoom_ReturnSuccess()
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.Room = Room.Imax;
         
         var movieValidator = new MovieValidator();
@@ -301,7 +301,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateRoom_ReturnError()
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.Room = (Room)300;
         
         var movieValidator = new MovieValidator();
@@ -324,7 +324,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateDuration_ReturnSuccess(int minutes)
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.Duration = TimeSpan.FromMinutes(minutes);      
         var movieValidator = new MovieValidator();
         
@@ -343,7 +343,7 @@ public class MovieValidatorTest : IClassFixture<MovieFixture>
     public void ValidateDuration_ReturnError(int minutes)
     {
         //Arrange
-        var movie = _movieFixture.CreateValidMovie();
+        var movie = _movieFixture.ValidMovie();
         movie.Duration = TimeSpan.FromMinutes(minutes);    
         
         var movieValidator = new MovieValidator();

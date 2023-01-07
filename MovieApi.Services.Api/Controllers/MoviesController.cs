@@ -1,8 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using MovieApi.Application.DTOs.Request;
-using MovieApi.Application.DTOs.Response;
+﻿using Microsoft.AspNetCore.Mvc;
 using MovieApi.Application.Interfaces;
+using MovieApi.Core.Shared.DTOs.Request;
+using MovieApi.Core.Shared.DTOs.Response;
 using MovieApi.Domain.Entities;
 using MovieApi.Domain.Interfaces;
 using Newtonsoft.Json;
@@ -13,21 +12,15 @@ namespace MovieApi.Controllers;
 public class MoviesController : ApiController
 {
     private readonly ICachingService _cachingService;
-    private readonly IMovieRepository _movieRepository;
     private readonly IMovieService _movieService;
-    private readonly IMapper _mapper;
     
     public MoviesController(
         ICachingService cachingService,
-        IMovieRepository movieRepository,
         IMovieService movieService,
-        IMapper mapper,
         INotifier notifier) : base (notifier)
     {
         _cachingService = cachingService;
-        _movieRepository = movieRepository;
         _movieService = movieService;
-        _mapper = mapper;
     }
 
     [HttpGet("{id:int}")]
@@ -40,22 +33,18 @@ public class MoviesController : ApiController
             return CustomResponse(JsonConvert.DeserializeObject<MovieDetailedResponseDto>(movieCache));
         }
 
-        var movie = await _movieRepository.FindByIdAsync(id);
-        if (movie is null) return NotFound();
+        var movieDto = await _movieService.FindByIdAsync(id);
+        if (movieDto is null) return NotFound();
 
-        await _cachingService.SetAsync($"movie_{movie.Id}", JsonConvert.SerializeObject(movie));
+        await _cachingService.SetAsync($"movie_{movieDto.Id}", JsonConvert.SerializeObject(movieDto));
 
-        return CustomResponse(_mapper.Map<MovieDetailedResponseDto>(movie));
+        return CustomResponse(movieDto);
     }
 
     [HttpGet]
     public async Task<ActionResult<List<MovieResponseDto>>> GetMoviesInTheatersAsync()
     {
-        
-        var movies = await _movieRepository.SearchAsync(movie => movie.OffTheatersDate > DateTime.Now);
-        
-        var moviesDto = _mapper.Map<List<Movie>, List<MovieResponseDto>>(movies.ToList());
-        
+        var moviesDto = await _movieService.FindMovieInTheatersAsync();
         return CustomResponse(moviesDto);
     }
 
@@ -63,9 +52,7 @@ public class MoviesController : ApiController
     public async Task<ActionResult<List<MovieResponseDto>>> GetAsync()
     {
         
-        var movies = await _movieRepository.FindAsync();
-        
-        var moviesDto = _mapper.Map<List<Movie>, List<MovieResponseDto>>(movies);
+        var moviesDto = await _movieService.FindAsync();
         
         return CustomResponse(moviesDto);
     }
@@ -74,13 +61,12 @@ public class MoviesController : ApiController
     public async Task<ActionResult> PostAsync([FromBody] MovieRequestDto movieRequestDto)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
-        var movie = _mapper.Map<MovieRequestDto, Movie>(movieRequestDto);
 
-        await _movieService.AddAsync(movie);
+        await _movieService.AddAsync(movieRequestDto);
         
         return CustomResponse();
     }
-    
+    /*
     [HttpPut("{id:int}")]
     public async Task<ActionResult> PutAsync(int id, [FromBody] UpdateMovieRequestDto updateMovieRequestDto)
     {
@@ -92,22 +78,23 @@ public class MoviesController : ApiController
 
         if (!ModelState.IsValid) return CustomResponse(ModelState);
         
-        var movie = await _movieRepository.FindByIdAsync(id);
-        if (movie is null) return NotFound();
+        var movieDto = await _movieService.FindByIdAsync(id);
+        if (movieDto is null) return NotFound();
         
         movie = _mapper.Map<MovieRequestDto, Movie>(updateMovieRequestDto, movie);
 
-        await _movieService.UpdateAsync(movie);
+        await _movieService.UpdateAsync(updateMovieRequestDto);
         
         if (IsOperationValid()) await _cachingService.SetAsync($"movie_{movie.Id}", JsonConvert.SerializeObject(movie));
         
         return CustomResponse();
     }
+    */
     
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteAsync(int id)
     {
-        var exist = await _movieRepository.AnyAsync(id);
+        var exist = await _movieService.AnyAsync(id);
         if (!exist) return NotFound();
 
         await _movieService.DeleteByIdAsync(id);

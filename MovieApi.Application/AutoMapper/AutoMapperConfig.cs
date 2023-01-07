@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using MovieApi.Application.DTOs.Request;
-using MovieApi.Application.DTOs.Response;
+using MovieApi.Core.Shared.DTOs.Request;
+using MovieApi.Core.Shared.DTOs.Response;
 using MovieApi.Domain.Entities;
 
 namespace MovieApi.Application.AutoMapper;
@@ -12,6 +12,6 @@ public class AutoMapperConfig : Profile
         CreateMap<MovieRequestDto, Movie>();
         CreateMap<UpdateMovieRequestDto, Movie>();
         CreateMap<Movie, MovieResponseDto>();
-        CreateMap<Movie, MovieDetailedResponseDto>();
+        CreateMap<Movie, MovieDetailedResponseDto>().ReverseMap();
     }
 }

@@ -4,11 +4,6 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
-        <RootNamespace>MovieApi.Domain</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\MovieApi.Core.Shared\MovieApi.Core.Shared.csproj" />
-    </ItemGroup>
 
 </Project>
